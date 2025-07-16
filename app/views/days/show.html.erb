@@ -1,7 +1,7 @@
-<h1 class="text-center mt-4">All Tasks</h1>
+<h1 class="text-center mt-4"><%=@day.date == @today.date ? "Today" : @day.date.strftime("%a, %B %-d") %></h1>
 <div>
     <% if @tasks.empty? %>
-        <p class="text-center mt-4">No tasks to display.</p>
+        <p class="mt-4 text-center">No tasks to display.</p>
     <% else %>
         <table class="w-50 mx-auto">
             <thead>
@@ -35,7 +35,7 @@
     <% end %>
     <div class="text-center mt-5">
     <%= form_with model: @task, local: true do |form| %>
-        <%= form.hidden_field :day_id, value: @today.id %>
+        <%= form.hidden_field :day_id, value: @day.id %>
         <p>
             <%= form.label :new_task %><br/>
             <%= form.text_field :title %>

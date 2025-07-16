@@ -2,39 +2,47 @@ class TasksController < ApplicationController
     def index
         @tasks = Task.order(:completed, :title)
         @task = Task.new
+        @today = Day.find_or_create_by(date: Date.today)
     end
 
     def create
         @task = Task.new(task_params)
         @task.completed = false
-        Rails.logger.info @task.inspect
         if @task.save
-            redirect_to tasks_path, notice: 'Task was successfully created.'
+            flash[:notice] = 'Task was successfully created.'
         else
-            Rails.logger.info @task.errors.full_messages
-            render :new
+            flash[:notice] = @task.errors.full_messages
         end
+        redirect_back(fallback_location: root_path)
     end
 
     def update
-        @task = Task.find(params[:id])
-        if @task.update(task_params)
-            redirect_to tasks_path, notice: 'Task was successfully updated.'
-        else
-            render :edit
+      @task = Task.find(params[:id])
+      if params[:day_id]
+        # Move to today or another day
+        if @task.update(day_id: params[:day_id])
+          flash[:notice] = 'Task moved to new day.'
         end
+      elsif params[:completed]
+        # Update completed status
+        if @task.update(completed: !@task.completed)
+          flash[:notice] = 'Task completion updated.'
+        end
+      end
+      redirect_back(fallback_location: root_path)
     end
 
     def destroy
         @task = Task.find(params[:id])
         @task.destroy
-        redirect_to tasks_path, notice: 'Task was successfully deleted.'
+        flash[:notice] = 'Task was successfully deleted.'
+        redirect_back(fallback_location: root_path)
     end
 
     private
 
     def task_params
-        params.require(:task).permit(:title, :completed)
+        params.require(:task).permit(:title, :completed, :day_id)
     end
 
 end

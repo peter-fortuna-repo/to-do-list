@@ -10,9 +10,16 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_07_15_150640) do
+ActiveRecord::Schema[8.0].define(version: 2025_07_16_161715) do
+  create_table "days", force: :cascade do |t|
+    t.date "date"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "tasks", force: :cascade do |t|
     t.string "title", null: false
     t.boolean "completed", default: false, null: false
+    t.integer "day_id"
   end
 end

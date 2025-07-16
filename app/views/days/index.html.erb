@@ -1,0 +1,17 @@
+<h1 class="mt-4 mb-4 text-center">History</h1>
+<table class="w-50 mx-auto">
+    <thead>
+        <tr>
+            <th>Date</th>
+            <th>Tasks completed</th>
+            <th>Tasks remaining</th>
+        </tr>
+    </thead>
+<% @days.each do |day| %>
+    <tr>
+        <td><%= link_to day.date, day_path(day) %></td>
+        <td><%= day.tasks.where(completed: true).count %></td>
+        <td><%= day.tasks.where(completed: false).count %></td>
+    </tr>
+<% end %>
+</table>
