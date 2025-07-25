@@ -1,6 +1,12 @@
 class TasksController < ApplicationController
-    def index
-        @tasks = Task.order(:completed, :title)
+    def work
+        @tasks = Task.where(work: true).order(:completed, :title)
+        @task = Task.new
+        @today = Day.find_or_create_by(date: Date.today)
+    end
+
+    def non_work
+        @tasks = Task.where(work: false).order(:completed, :title)
         @task = Task.new
         @today = Day.find_or_create_by(date: Date.today)
     end
@@ -42,7 +48,9 @@ class TasksController < ApplicationController
     private
 
     def task_params
-        params.require(:task).permit(:title, :completed, :day_id)
+        permitted = params.require(:task).permit(:title, :completed, :day_id, :work)
+        permitted[:work] = ActiveModel::Type::Boolean.new.cast(permitted[:work])
+        permitted
     end
 
 end

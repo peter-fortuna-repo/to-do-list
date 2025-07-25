@@ -12,6 +12,7 @@
                 </tr>
             </thead>
         <% @tasks.each do |task| %>
+            <% if task.work %>
                 <tr>
                     <td><%= task.title %></td>
                     <td><%= task.completed ? "✅" : "📝" %></td>
@@ -30,6 +31,7 @@
                     </td>
                     <td><%= link_to "Delete", task_path(task), data: { turbo_method: :delete} %></td>
                 </tr>
+                <% end %>
             <% end %>
         </table>
     <% end %>
