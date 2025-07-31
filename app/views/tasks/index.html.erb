@@ -38,7 +38,6 @@
     <div class="text-center mt-4 mb-5">
     <%= form_with model: @task, local: true do |form| %>
         <%= form.hidden_field :day_id, value: @today.id %>
-        <%= form.hidden_field :work, value: false %>
         <p>
             <%= form.label :new_task %><br/>
             <%= form.text_field :title %>
