@@ -10,16 +10,42 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_07_31_172938) do
-  create_table "days", force: :cascade do |t|
-    t.date "date"
+ActiveRecord::Schema[8.0].define(version: 2025_07_31_191151) do
+  create_table "email_groups", force: :cascade do |t|
+    t.string "name"
+    t.integer "user_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "body"
+    t.string "frequency"
+    t.string "day_of_week"
+    t.time "time_of_day"
   end
 
   create_table "tasks", force: :cascade do |t|
     t.string "title", null: false
     t.boolean "completed", default: false, null: false
-    t.integer "day_id"
+    t.date "date"
+    t.integer "user_id"
+    t.string "tag", default: "None"
+  end
+
+  create_table "users", force: :cascade do |t|
+    t.string "username"
+    t.string "first_name"
+    t.string "last_name"
+    t.string "password"
+    t.string "email"
+    t.string "password_digest"
+    t.boolean "admin"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "users_email_groups", force: :cascade do |t|
+    t.integer "email_group_id"
+    t.integer "user_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 end

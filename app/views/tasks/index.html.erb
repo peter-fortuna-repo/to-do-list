@@ -22,9 +22,9 @@
                                 data: { turbo_method: :patch}%>
                         </td>
                         <td>
-                            <% if !task.completed && task.day_id != @today.id%>
+                            <% if !task.completed && task.date != Date.today %>
                                 <%= link_to "Move to today",
-                                    task_path(task, {day_id: @today.id}),
+                                    task_path(task, {date: Date.today}),
                                     method: :patch,
                                     data: { turbo_method: :patch}%>
                             <%end%>
@@ -37,7 +37,9 @@
     <% end %>
     <div class="text-center mt-4 mb-5">
     <%= form_with model: @task, local: true do |form| %>
-        <%= form.hidden_field :day_id, value: @today.id %>
+        <%= form.hidden_field :date, value: Date.today %>
+        <%= form.hidden_field :user_id, value: current_user.id %>
+        <%= form.hidden_field :tag, value: "st" %>
         <p>
             <%= form.label :new_task %><br/>
             <%= form.text_field :title %>
@@ -48,36 +50,38 @@
         </p>
     <% end %>
     </div>
-    <h2 class="text-center mt-5 mb-4">Completed</h2>
-    <table class="w-50 mx-auto mb-5">
-    <thead>
-        <tr>
-            <th>Task</th>
-            <th>Done</th>
-            <th colspan="2">Actions</th>
-        </tr>
-    </thead>
-    <% @tasks.each do |task| %>
-        <% if task.completed %>
+    <% if !@tasks.empty? %>
+        <h2 class="text-center mt-5 mb-4">Completed</h2>
+        <table class="w-50 mx-auto mb-5">
+        <thead>
             <tr>
-                <td><%= task.title %></td>
-                <td><%= task.completed ? "✅" : "📝" %></td>
-                <td><%= link_to task.completed ? "Mark incomplete" : "Mark complete",
-                        task_path(task, {completed: !task.completed}),
-                        method: :patch,
-                        data: { turbo_method: :patch}%>
-                </td>
-                <td>
-                    <% if !task.completed && task.day_id != @today.id%>
-                        <%= link_to "Move to today",
-                            task_path(task, {day_id: @today.id}),
+                <th>Task</th>
+                <th>Done</th>
+                <th colspan="2">Actions</th>
+            </tr>
+        </thead>
+        <% @tasks.each do |task| %>
+            <% if task.completed %>
+                <tr>
+                    <td><%= task.title %></td>
+                    <td><%= task.completed ? "✅" : "📝" %></td>
+                    <td><%= link_to task.completed ? "Mark incomplete" : "Mark complete",
+                            task_path(task, {completed: !task.completed}),
                             method: :patch,
                             data: { turbo_method: :patch}%>
-                    <%end%>
-                </td>
-                <td><%= link_to "Delete", task_path(task), data: { turbo_method: :delete} %></td>
-            </tr>
+                    </td>
+                    <td>
+                        <% if !task.completed && task.date != Date.today %>
+                            <%= link_to "Move to today",
+                                task_path(task, {date: Date.today}),
+                                method: :patch,
+                                data: { turbo_method: :patch}%>
+                        <%end%>
+                    </td>
+                    <td><%= link_to "Delete", task_path(task), data: { turbo_method: :delete} %></td>
+                </tr>
+            <% end %>
         <% end %>
+        </table>
     <% end %>
-</table>
 </div>

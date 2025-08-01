@@ -1,27 +1,29 @@
 class TasksController < ApplicationController
     def index
-        @tasks = Task.order(:completed, :title)
+        @tasks = Task.where(user_id: current_user.id).order(:completed, :title)
         @task = Task.new
-        @today = Day.find_or_create_by(date: Date.today)
     end
 
     def create
         @task = Task.new(task_params)
         @task.completed = false
+        Rails.logger.debug "-------- @task.inspect -----------_______!!!!!!"
+        Rails.logger.debug @task.inspect
         if @task.save
             flash[:notice] = 'Task was successfully created.'
         else
             flash[:notice] = @task.errors.full_messages
+            Rails.logger.debug @task.errors.full_messages
         end
         redirect_back(fallback_location: root_path)
     end
 
     def update
       @task = Task.find(params[:id])
-      if params[:day_id]
+      if params[:date]
         # Move to today or another day
-        if @task.update(day_id: params[:day_id])
-          flash[:notice] = 'Task moved to new day.'
+        if @task.update(date: params[:date])
+          flash[:notice] = 'Task moved to today.'
         end
       elsif params[:completed]
         # Update completed status
@@ -42,8 +44,7 @@ class TasksController < ApplicationController
     private
 
     def task_params
-        permitted = params.require(:task).permit(:title, :completed, :day_id)
-        permitted
+        params.require(:task).permit(:user_id, :title, :completed, :date, :tag)
     end
 
 end
