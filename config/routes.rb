@@ -9,5 +9,10 @@ Rails.application.routes.draw do
   resources :tasks, only: %i[index create update destroy]
   resources :sessions, only: %i[new create], path: "login", path_names: {new: ""}
   resource :session, only: %i[destroy], path: "logout"
-
+  resources :email_groups, only: %i[index show create update destroy] do
+    member do
+      post :subscribe
+      delete :unsubscribe
+    end
+  end
 end

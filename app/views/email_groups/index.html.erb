@@ -1,0 +1,48 @@
+<h2 class="text-center mt-4 mb-4">Email Groups</h2>
+<%= render "shared/alerts" %>
+<div>
+    <% if @all_email_groups.empty? %>
+        <p class="text-center mt-4">No email groups to display.</p>
+    <% else %>
+        <table class="w-50 mx-auto">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Num Followers</th>
+                    <th>Creator</th>
+                    <th colspan="2">Actions</th>
+                </tr>
+            </thead>
+            <% @all_email_groups.each do |group| %>
+                <tr>
+                    <td><%= group.name %></td>
+                    <td><%= group.users.count %></td>
+                    <td><%= group.creator.username %></td>
+                    <td><%= link_to "View", email_group_path(group.id) %></td>
+                    <% if UsersEmailGroup.find_by(email_group_id: group.id, user_id: current_user.id) %>
+                        <td><%= link_to "Unsubscribe", unsubscribe_email_group_path(group.id, user_id: current_user.id), data: {turbo_method: :delete} %></td>
+                    <% else %>
+                        <td><%= link_to "Subscribe", subscribe_email_group_path(group.id, user_id: current_user.id), data: {turbo_method: :post} %></td>
+                    <% end %>
+                </tr>
+            <% end %>
+        </table>
+    <% end %>
+    <div class="text-center mt-4 mb-5">
+        <%= form_with model: @new_email_group, local: true do |form| %>
+            <%= form.hidden_field :creator_id, value: current_user.id %>
+            <%= form.hidden_field :body, value: "Edit text here" %>
+            <%= form.hidden_field :frequency, value: "Daily" %>
+            <%= form.hidden_field :day_of_week, value: "N/A" %>
+            <%= form.hidden_field :time_of_day, value: "07:00" %>
+            <p>
+                <%= form.label :name %><br/>
+                <%= form.text_field :name %>
+            </p>
+
+            <p>
+                <%= form.submit %>
+            </p>
+        <% end %>
+    </div>
+</div>
