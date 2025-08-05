@@ -3,7 +3,7 @@ class Task < ApplicationRecord
 
     validates :user_id, presence: true
     validates :title, presence: true
-    validates :completed, inclusion: { in: [true, false] }
+    validates :completed, inclusion: {in: [true, false]}
     validates :date, presence: true
     validates :tag, presence: true
 end

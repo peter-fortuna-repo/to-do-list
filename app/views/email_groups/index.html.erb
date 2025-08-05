@@ -14,17 +14,19 @@
                 </tr>
             </thead>
             <% @all_email_groups.each do |group| %>
-                <tr>
-                    <td><%= group.name %></td>
-                    <td><%= group.users.count %></td>
-                    <td><%= group.creator.username %></td>
-                    <td><%= link_to "View", email_group_path(group.id) %></td>
-                    <% if UsersEmailGroup.find_by(email_group_id: group.id, user_id: current_user.id) %>
-                        <td><%= link_to "Unsubscribe", unsubscribe_email_group_path(group.id, user_id: current_user.id), data: {turbo_method: :delete} %></td>
-                    <% else %>
-                        <td><%= link_to "Subscribe", subscribe_email_group_path(group.id, user_id: current_user.id), data: {turbo_method: :post} %></td>
-                    <% end %>
-                </tr>
+                <% if group.private == false || group.creator.id == current_user.id || group.users.exists?(id: target_id) %>
+                    <tr>
+                        <td><%= group.name %></td>
+                        <td><%= group.users.count %></td>
+                        <td><%= group.creator.username %></td>
+                        <td><%= link_to "View", email_group_path(group.id) %></td>
+                        <% if UsersEmailGroup.find_by(email_group_id: group.id, user_id: current_user.id) %>
+                            <td><%= link_to "Unsubscribe", unsubscribe_email_group_path(group.id, user_id: current_user.id), data: {turbo_method: :delete} %></td>
+                        <% else %>
+                            <td><%= link_to "Subscribe", subscribe_email_group_path(group.id, user_id: current_user.id), data: {turbo_method: :post} %></td>
+                        <% end %>
+                    </tr>
+                <% end %>
             <% end %>
         </table>
     <% end %>
@@ -32,9 +34,9 @@
         <%= form_with model: @new_email_group, local: true do |form| %>
             <%= form.hidden_field :creator_id, value: current_user.id %>
             <%= form.hidden_field :body, value: "Edit text here" %>
-            <%= form.hidden_field :frequency, value: "Daily" %>
-            <%= form.hidden_field :day_of_week, value: "N/A" %>
+            <%= form.hidden_field :day_of_week, value: "Daily" %>
             <%= form.hidden_field :time_of_day, value: "07:00" %>
+            <%= form.hidden_field :private, value: false %>
             <p>
                 <%= form.label :name %><br/>
                 <%= form.text_field :name %>

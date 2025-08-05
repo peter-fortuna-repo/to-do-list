@@ -1,16 +1,25 @@
 <h1 class="text-center mt-4 mb-4"><%=@email_group.name%></h1>
 <div class="text-center mb-4">Created by: <%= @email_group.creator.username %></div>
+<div class="text-center mb-4">To: <%= @email_group.users.pluck(:email).join(", ") %></div>
 <div class="align-items-center d-flex">
     <div class="col-8 mx-auto">
         <%= form_with(model: @email_group) do |f|%>
-                <div class="form-group row mb-3">
-                    <%= f.label :frequency, class: "form-label" %>
-                    <%= f.select :frequency, ["Daily", "Weekly", "Monthly"], class: "form-control" %>
+            <div class="form-group row mb-3">
+                <div class="col-md-4 d-flex align-items-center">
+                    <%= f.label :day_of_week, class: "form-label me-2 mt-1" %>
+                    <%= f.select :day_of_week, ["Daily", "Mondays", "Tuesdays", "Wednesdays", "Thursdays", "Fridays", "Saturdays", "Sundays"], class: "form-control" %>
                 </div>
-                <div class="form-group row mb-3">
+                <div class="col-md-4">
                     <%= f.label :time_of_day, class: "form-label" %>
-                    <%= f.time_field :time_of_day, class: "form-control" %>
+                    <%= f.select :time_of_day, (0..23).map { |h| ["%02d:00" % h, "%02d:00" % h] }, class: "form-control" %>
                 </div>
+                <% if @email_group.creator.username == current_user.username %>
+                    <div class="col-md-4 d-flex align-items-center">
+                        <%= f.label :private, "Private", class: "form-label me-2 mt-2" %>
+                        <%= f.check_box :private, class: "form-check-input" %>
+                    </div>
+                <% end %>
+            </div>
                 <div class="form-group row mb-4">
                     <%= f.label :body, class: "form-label" %>
                     <%= f.text_area :body, class: "form-control", rows: 12 %>
@@ -19,14 +28,19 @@
                     <%= f.submit "Save changes" %>
                 </div>
         <% end %>
-        <td><%= link_to "Back", email_groups_path, class: "me-4"%></td>
+        <div class="d-flex gap-2 mt-4 mb-4">
+        <%= link_to "Back", email_groups_path, class: "btn btn-secondary" %>
         <% if UsersEmailGroup.find_by(email_group_id: @email_group.id, user_id: current_user.id) %>
-            <td><%= link_to "Unsubscribe", unsubscribe_email_group_path(@email_group.id, user_id: current_user.id), data: {turbo_method: :delete} %></td>
+            <%= link_to "Unsubscribe", unsubscribe_email_group_path(@email_group.id, user_id: current_user.id), data: {turbo_method: :delete}, class: "btn btn-secondary" %>
         <% else %>
-            <td><%= link_to "Subscribe", subscribe_email_group_path(@email_group.id, user_id: current_user.id), data: {turbo_method: :post} %></td>
+            <%= link_to "Subscribe", subscribe_email_group_path(@email_group.id, user_id: current_user.id), data: {turbo_method: :post}, class: "btn" %>
         <% end %>
         <% if @email_group.creator.username == current_user.username %>
-            <%= link_to "Delete", @email_group, data: {turbo_method: :delete}, class: "ms-4" %>
+            <%= link_to "Delete", @email_group, data: {turbo_method: :delete, turbo_confirm: "Delete email group?"}, class: "btn btn-danger" %>
+            <div class="ms-auto">
+                <%= button_to "Send Now", email_groups_path, data: {turbo_method: :post}, class: "btn btn-primary" %>
+            </div>
         <% end %>
+        </div>
     </div>
 </div>

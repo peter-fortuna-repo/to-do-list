@@ -10,16 +10,16 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_08_02_005114) do
+ActiveRecord::Schema[8.0].define(version: 2025_08_05_160959) do
   create_table "email_groups", force: :cascade do |t|
     t.string "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "body"
-    t.string "frequency"
     t.string "day_of_week"
-    t.time "time_of_day"
     t.integer "creator_id"
+    t.boolean "private", default: false
+    t.string "time_of_day", default: "07:00"
   end
 
   create_table "tasks", force: :cascade do |t|

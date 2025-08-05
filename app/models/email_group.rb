@@ -6,7 +6,7 @@ class EmailGroup < ApplicationRecord
     validates :name, presence: true
     validates :creator_id, presence: true
     validates :body, presence: true
-    validates :frequency, presence: true
     validates :day_of_week, presence: true
     validates :time_of_day, presence: true
+    validates :private, inclusion: {in: [true, false]}
 end

@@ -49,8 +49,15 @@ class EmailGroupsController < ApplicationController
         redirect_to email_groups_path
     end
 
+    def send_email_now
+        eamil_group = EmailGroup.find(params[:id])
+    end
+
     private
     def email_group_params
-        params.expect(email_group: %i[name creator_id body frequency day_of_week time_of_day])
+        permitted = params.expect(email_group: %i[name creator_id body day_of_week time_of_day private])
+        permitted[:private] = ActiveModel::Type::Boolean.new.cast(permitted[:private])
+        permitted
+
     end
 end
