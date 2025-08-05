@@ -41,6 +41,7 @@ gem "thruster", require: false
 # gem "image_processing", "~> 1.2"
 
 gem "bootstrap-email"
+gem "postmark-rails"
 
 group :development, :test do
   # Use sqlite3 as the database for Active Record

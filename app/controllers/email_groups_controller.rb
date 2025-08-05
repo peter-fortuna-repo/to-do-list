@@ -49,8 +49,11 @@ class EmailGroupsController < ApplicationController
         redirect_to email_groups_path
     end
 
-    def send_email_now
-        eamil_group = EmailGroup.find(params[:id])
+    def send_gmail
+        email_group = EmailGroup.find(params[:id])
+        EmailGroupMailer.group_email(email_group).deliver_now
+        flash[:notice] = "Email sent to group"
+        redirect_to email_groups_path
     end
 
     private

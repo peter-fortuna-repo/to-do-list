@@ -38,7 +38,7 @@
         <% if @email_group.creator.username == current_user.username %>
             <%= link_to "Delete", @email_group, data: {turbo_method: :delete, turbo_confirm: "Delete email group?"}, class: "btn btn-danger" %>
             <div class="ms-auto">
-                <%= button_to "Send Now", email_groups_path, data: {turbo_method: :post}, class: "btn btn-primary" %>
+                <%= button_to "Send Gmail", send_gmail_email_group_path(@email_group), method: :post, class: "btn btn-primary" %>
             </div>
         <% end %>
         </div>

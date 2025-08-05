@@ -11,6 +11,7 @@ Rails.application.routes.draw do
   resource :session, only: %i[destroy], path: "logout"
   resources :email_groups, only: %i[index show create update destroy] do
     member do
+      post :send_gmail
       post :subscribe
       delete :unsubscribe
     end
