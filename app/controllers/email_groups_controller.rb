@@ -53,20 +53,21 @@ class EmailGroupsController < ApplicationController
         old_settings = ActionMailer::Base.smtp_settings
         ActionMailer::Base.smtp_settings = Rails.application.config.action_mailer.smtp_settings
         email_group = EmailGroup.find(params[:id])
-        EmailGroupMailer.group_email(email_group).deliver_now
+        EmailGroupMailer.group_email(email_group).deliver_later
         flash[:notice] = "Email sent to group"
         ActionMailer::Base.smtp_settings = old_settings
         redirect_to email_groups_path
     end
 
     def send_test_email
-        old_settings = ActionMailer::Base.smtp_settings
-        ActionMailer::Base.delivery_method = :test
+        original_delivery_method = ActionMailer::Base.delivery_method
+        original_settings = ActionMailer::Base.smtp_settings
+        ActionMailer::Base.delivery_method = :letter_opener
         email_group = EmailGroup.find(params[:id])
         EmailGroupMailer.group_email(email_group).deliver_now
-        flash[:notice] = "Email sent to group"
-        ActionMailer::Base.smtp_settings = old_settings
-        redirect_to email_groups_path
+        flash[:notice] = "Email opened in browser"
+        ActionMailer::Base.smtp_settings = original_settings
+        ActionMailer::Base.delivery_method = original_delivery_method
     end
 
     private

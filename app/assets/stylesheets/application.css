@@ -8,3 +8,8 @@
  *
  * Consider organizing styles into separate files for maintainability.
  */
+
+ .rich-text-input {
+    min-height: 300px;
+    overflow-y: auto;
+ }

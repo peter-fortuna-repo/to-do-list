@@ -3,7 +3,7 @@
 <div class="text-center mb-4">To: <%= @email_group.users.pluck(:email).join(", ") %></div>
 <div class="align-items-center d-flex">
     <div class="col-8 mx-auto">
-        <%= form_with(model: @email_group) do |f|%>
+        <%= form_with(model: @email_group, html: { id: "email-group-form" }) do |f|%>
             <div class="form-group row mb-3">
                 <div class="col-md-4 d-flex align-items-center">
                     <%= f.label :day_of_week, class: "form-label me-2 mt-1" %>
@@ -22,26 +22,62 @@
             </div>
                 <div class="form-group row mb-4">
                     <%= f.label :body, class: "form-label" %>
-                    <%= f.text_area :body, class: "form-control", rows: 12 %>
+                    <%= f.rich_text_area :body, class: "form-control rich-text-input" %>
                 </div>
                 <div class="form-group row mb-4">
                     <%= f.submit "Save changes" %>
                 </div>
         <% end %>
         <div class="d-flex gap-2 mt-4 mb-4">
-        <%= link_to "Back", email_groups_path, class: "btn btn-secondary" %>
+        <%= link_to "Back", email_groups_path, class: "btn btn-secondary", data: { confirm: "You have unsaved changes. Are you sure you want to leave?" } %>
         <% if UsersEmailGroup.find_by(email_group_id: @email_group.id, user_id: current_user.id) %>
             <%= link_to "Unsubscribe", unsubscribe_email_group_path(@email_group.id, user_id: current_user.id), data: {turbo_method: :delete}, class: "btn btn-secondary" %>
         <% else %>
-            <%= link_to "Subscribe", subscribe_email_group_path(@email_group.id, user_id: current_user.id), data: {turbo_method: :post}, class: "btn" %>
+            <%= link_to "Subscribe", subscribe_email_group_path(@email_group.id, user_id: current_user.id), data: {turbo_method: :post}, class: "btn btn-secondary" %>
         <% end %>
         <% if @email_group.creator.username == current_user.username %>
             <%= link_to "Delete", @email_group, data: {turbo_method: :delete, turbo_confirm: "Delete email group?"}, class: "btn btn-danger" %>
             <div class="ms-auto d-flex gap-2">
-                <%= button_to "Send Test", send_test_email_email_group_path(@email_group), method: :post, class: "btn btn-primary" %>
-                <%= button_to "Send Gmail", send_gmail_email_group_path(@email_group), method: :post, class: "btn btn-primary" %>
+                <%= button_to "Preview Email", send_test_email_email_group_path(@email_group), method: :post, class: "btn btn-primary", data: { confirm: "You have unsaved changes. Are you sure you want to send?" } %>
+                <%= button_to "Send Gmail", send_gmail_email_group_path(@email_group), method: :post, class: "btn btn-primary", data: { confirm: "You have unsaved changes. Are you sure you want to send?" } %>
             </div>
         <% end %>
         </div>
     </div>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+        const form = document.getElementById("email-group-form");
+        let isDirty = false;
+
+        if (form) {
+            form.addEventListener("change", function() {
+            isDirty = true;
+            });
+
+            document.querySelectorAll("trix-editor").forEach(function(editor) {
+            editor.addEventListener("trix-change", function() {
+                isDirty = true;
+            });
+            });
+
+            // Handle <a> links with data-confirm
+            document.querySelectorAll('a[data-confirm]').forEach(function(link) {
+            link.addEventListener("click", function(e) {
+                if (isDirty && !confirm(link.dataset.confirm)) {
+                e.preventDefault();
+                }
+            });
+            });
+
+            // Handle <form> buttons with data-confirm
+            document.querySelectorAll('form button[data-confirm]').forEach(function(btn) {
+            btn.addEventListener("click", function(e) {
+                if (isDirty && !confirm(btn.dataset.confirm)) {
+                e.preventDefault();
+                }
+            });
+            });
+        }
+        });
+    </script>
 </div>
