@@ -22,7 +22,7 @@
                                 data: { turbo_method: :patch}%>
                         </td>
                         <td>
-                            <% if !task.completed && task.date != Date.today %>
+                            <% if !task.completed && task.date != Date.today && false %>
                                 <%= link_to "Move to today",
                                     task_path(task, {date: Date.today}),
                                     method: :patch,

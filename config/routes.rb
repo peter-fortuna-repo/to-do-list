@@ -12,6 +12,7 @@ Rails.application.routes.draw do
   resources :email_groups, only: %i[index show create update destroy] do
     member do
       post :send_gmail
+      post :send_test_email
       post :subscribe
       delete :unsubscribe
     end

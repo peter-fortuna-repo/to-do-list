@@ -9,11 +9,8 @@ class TasksController < ApplicationController
         @task.completed = false
         Rails.logger.debug "-------- @task.inspect -----------_______!!!!!!"
         Rails.logger.debug @task.inspect
-        if @task.save
-            flash[:notice] = 'Task was successfully created.'
-        else
+        if !@task.save
             flash[:notice] = @task.errors.full_messages
-            Rails.logger.debug @task.errors.full_messages
         end
         redirect_back(fallback_location: root_path)
     end
@@ -37,7 +34,6 @@ class TasksController < ApplicationController
     def destroy
         @task = Task.find(params[:id])
         @task.destroy
-        flash[:notice] = 'Task was successfully deleted.'
         redirect_back(fallback_location: root_path)
     end
 
