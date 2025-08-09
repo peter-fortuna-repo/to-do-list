@@ -15,18 +15,32 @@
                 </div>
                 <% if @email_group.creator.username == current_user.username %>
                     <div class="col-md-4 d-flex align-items-center">
-                        <%= f.label :private, "Private", class: "form-label me-2 mt-2" %>
-                        <%= f.check_box :private, class: "form-check-input" %>
+                        <%= f.label :private, "Private", class: "form-label me-2 mb-0" %>
+                        <%= f.check_box :private, class: "form-check-input mt-0" %>
                     </div>
                 <% end %>
+            </div>      
+            <div class="form-group row mb-4 col-md-6">
+                <%= f.label "Subject", class: "form-label" %>
+                <%= f.text_field :name, class: "form-control" %>
             </div>
-                <div class="form-group row mb-4">
-                    <%= f.label :body, class: "form-label" %>
-                    <%= f.rich_text_area :body, class: "form-control rich-text-input" %>
+            <div class="form-group row mb-3">
+                <div class="d-flex align-items-center">
+                    <%= f.label "Tasks", class: "form-label mb-0" %>
+                    <%= f.check_box :to_dos, class: "form-check-input mt-0 ms-2 me-4" %>
+                    <%= f.label :weather, class: "form-label mb-0" %>
+                    <%= f.check_box :weather, class: "form-check-input mt-0 ms-2 me-4" %>
+                    <%= f.label :finance, class: "form-label mb-0" %>
+                    <%= f.check_box :finance, class: "form-check-input mt-0 ms-2 me-4" %>
                 </div>
-                <div class="form-group row mb-4">
-                    <%= f.submit "Save changes" %>
-                </div>
+            </div>
+            <div class="form-group row mb-4">
+                <%= f.label :body, class: "form-label" %>
+                <%= f.rich_text_area :body, class: "form-control rich-text-input" %>
+            </div>
+            <div class="form-group row mb-4">
+                <%= f.submit "Save changes" %>
+            </div>
         <% end %>
         <div class="d-flex gap-2 mt-4 mb-4">
         <%= link_to "Back", email_groups_path, class: "btn btn-secondary", data: { confirm: "You have unsaved changes. Are you sure you want to leave?" } %>
